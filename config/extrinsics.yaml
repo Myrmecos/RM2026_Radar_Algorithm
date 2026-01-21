@@ -1,0 +1,24 @@
+# Camera Extrinsic Calibration Results
+# Generated from manual calibration
+# Residual: 6.4079 pixels
+
+# Rotation matrix (3x3)
+R: [[0.9903, -0.0388, -0.1338],
+[-0.0085, -0.9754, 0.2204],
+[-0.1390, -0.2172, -0.9662]]
+
+# Translation vector (3x1)
+t: [[-0.0604], [0.4348], [15.9289]]
+
+# Calibration metadata
+residual: 6.4079
+calibration_date: "2026-01-21"
+
+# 校准成功! 残差: 5.7694
+# 旋转矩阵 R:
+# [0.9903 -0.0388 -0.1338]
+# [-0.0085 -0.9754 0.2204]
+# [-0.1390 -0.2172 -0.9662]
+
+# 平移向量 t:
+# [-0.0604 0.4348 15.9289]

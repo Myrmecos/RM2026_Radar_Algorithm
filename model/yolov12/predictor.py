@@ -57,31 +57,42 @@ class Predictor:
 
     def predict_batch(self, images):
         all_detections = []
-        results = self.model.predict(
-            images,
-            imgsz=self.input_size,
-            conf=self.conf_thres,
-            iou=self.iou_thres,
-            max_det=self.max_det,
-        )
-        for result, image in zip(results, images):
-            detections = []
-            for box in result.boxes:
-                for conf, cls, xyxyn in zip(box.conf, box.cls, box.xyxyn):
-                    conf = float(conf.detach().cpu().numpy())
-                    cls = int(cls.detach().cpu().numpy())
-                    xyxyn = xyxyn.detach().cpu().numpy()
-                    x1, y1, x2, y2 = xyxyn
-                    ## Normalzied coordinates to pixel coordinates
-                    x1, y1, x2, y2 = (
-                        int(x1 * image.shape[1]),
-                        int(y1 * image.shape[0]),
-                        int(x2 * image.shape[1]),
-                        int(y2 * image.shape[0]),
-                    )
-                    line = (int(cls), [x1, y1, x2, y2], float(conf))
-                    detections.append(line)
-            all_detections.append(detections)
+        
+        # Check if model is TensorRT engine (fixed batch size)
+        is_engine = self.model_path.endswith('.engine')
+        
+        if is_engine:
+            # Process images one by one for TensorRT engines with fixed batch size
+            for image in images:
+                detections, _ = self.predict(image)
+                all_detections.append(detections)
+        else:
+            # Process all images at once for other model formats
+            results = self.model.predict(
+                images,
+                imgsz=self.input_size,
+                conf=self.conf_thres,
+                iou=self.iou_thres,
+                max_det=self.max_det,
+            )
+            for result, image in zip(results, images):
+                detections = []
+                for box in result.boxes:
+                    for conf, cls, xyxyn in zip(box.conf, box.cls, box.xyxyn):
+                        conf = float(conf.detach().cpu().numpy())
+                        cls = int(cls.detach().cpu().numpy())
+                        xyxyn = xyxyn.detach().cpu().numpy()
+                        x1, y1, x2, y2 = xyxyn
+                        ## Normalzied coordinates to pixel coordinates
+                        x1, y1, x2, y2 = (
+                            int(x1 * image.shape[1]),
+                            int(y1 * image.shape[0]),
+                            int(x2 * image.shape[1]),
+                            int(y2 * image.shape[0]),
+                        )
+                        line = (int(cls), [x1, y1, x2, y2], float(conf))
+                        detections.append(line)
+                all_detections.append(detections)
         return all_detections, None
 
     def visualize_results(self, image, detections, class_names=None):

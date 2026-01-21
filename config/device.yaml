@@ -10,7 +10,7 @@ camera:
   dist_coeffs: [-0.060205, 0.116970, -0.000497, 0.001010, 0.000000]
   display_fps: true
   recording_workers_num: 2
-  recording_save_root_dir: /home/siyu/rm/data/mnt/ssd
+  recording_save_root_dir: /home/etmphile/桌面/RM2025-Radar-Algorithm/ssd/referee_logs
   
 
 

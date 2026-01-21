@@ -1,0 +1,1 @@
+python -m model.digit_classifier.train --dataset-path /home/etmphile/桌面/RM2025-Radar-Algorithm/training_data/RM2025-Armor-Pattern-Public-Dataset/RM2025-Armor-Pattern-Dataset

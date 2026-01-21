@@ -1,0 +1,6 @@
+path: /home/etmphile/桌面/RM2025-Radar-Algorithm/training_data/RM2025-Car-Public-Dataset
+train: train/images
+val: val/images
+test: test/images
+names:
+  0: car

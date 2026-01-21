@@ -88,7 +88,7 @@ class RefereeSerialManager(Node):
         self.cb_funcs = {}
 
         # Logging
-        self.recording_save_root_dir = "/home/siyu/rm/data/mnt/ssd/referee_logs"
+        self.recording_save_root_dir = "/home/etmphile/桌面/RM2025-Radar-Algorithm/ssd/referee_logs"
         self.tx_frame_count = 0
         self.rx_frame_count = 0
         self.lock = threading.Lock()

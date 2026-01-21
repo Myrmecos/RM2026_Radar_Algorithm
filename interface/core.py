@@ -265,6 +265,8 @@ class RadarStationMainWindow(QMainWindow):
         self.calibrate_btn.setStyleSheet(
             "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }"
         )
+        # 点击后弹出外参标定对话框
+        self.calibrate_btn.clicked.connect(self.open_keypoint_calibration)
         layout.addWidget(self.calibrate_btn)
 
         # 校准状态显示
@@ -2252,17 +2254,16 @@ class KeypointCalibrationDialog(QDialog):
 
 def launch():
     """启动雷达站主界面"""
-    print(QCoreApplication.libraryPaths())
-    QCoreApplication.setLibraryPaths(
-        [
-            "/home/fallengold/miniconda3/envs/radar/lib/python3.10/site-packages/PyQt5/Qt5/plugins"
-        ]
-    )
     import os
-
-    os.environ["QT_PLUGIN_PATH"] = (
-        "/home/fallengold/miniconda3/envs/radar/lib/python3.10/site-packages/PyQt5/Qt5/plugins"
-    )
+    
+    # Dynamically get the home directory
+    home = os.path.expanduser("~")
+    qt_plugin_path = os.path.join(home, "miniconda3/envs/radar/lib/python3.10/site-packages/PyQt5/Qt5/plugins")
+    
+    print(QCoreApplication.libraryPaths())
+    QCoreApplication.setLibraryPaths([qt_plugin_path])
+    
+    os.environ["QT_PLUGIN_PATH"] = qt_plugin_path
     os.environ["QT_LOGGING_RULES"] = "qt5ct.debug=false"
     os.environ["QT_QPA_PLATFORM"] = "xcb"
     app = QApplication(sys.argv)
@@ -2270,6 +2271,7 @@ def launch():
     window = RadarStationMainWindow()
     window.show()
     app.exec_()
+
 
 
 if __name__ == "__main__":
