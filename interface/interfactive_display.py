@@ -129,7 +129,7 @@ class ZoomableDraggableLabel(QLabel):
         if event.button() == Qt.LeftButton:
             self.dragging = True
             self.last_pan_point = event.pos()
-            self.setCursor(Qt.ClosedHandCursor)
+            self.setCursor(Qt.CrossCursor)
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -151,14 +151,14 @@ class ZoomableDraggableLabel(QLabel):
         if event.button() == Qt.LeftButton:
             self.dragging = False
             self.setCursor(
-                Qt.OpenHandCursor if self.original_pixmap else Qt.ArrowCursor
+                Qt.CrossCursor if self.original_pixmap else Qt.CrossCursor
             )
         super().mouseReleaseEvent(event)
 
     def enterEvent(self, event):
         """鼠标进入控件"""
         if self.original_pixmap:
-            self.setCursor(Qt.OpenHandCursor)
+            self.setCursor(Qt.CrossCursor)
         super().enterEvent(event)
 
     def leaveEvent(self, event):

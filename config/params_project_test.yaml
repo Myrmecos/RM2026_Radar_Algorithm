@@ -1,0 +1,86 @@
+car_detector:
+  weights_path: "weights/car.engine" # Path to the car detection model weights
+  img_size: 1280
+  conf_thres: 0.2
+  iou_thres: 0.5
+  max_det: 10
+  tracker_config_path: "config/botsort.yaml" # Path to the tracker configuration file
+  
+
+armor_detector:
+  class_names: ["B1", "B2", "B3", "B4", "B7", "R1", "R2", "R3", "R4", "R7", "G1", "G2", "G3", "G4", "G7"]
+  use_enhanced_detector: true
+  armor_detector_type: "two_step" # three_step, three_step
+
+  ##### Weights and size configuration for three step detector
+  # weights_path: "weights/armor_pfa_dynamic.engine"
+  # img_size: [640, 640]
+  
+  ##### Weights and size configuration for two step detector
+  weights_path: "weights/armor.engine" 
+  img_size: 192
+  
+  ##### Weights and size configuration END
+
+  ##### Post processing configuration for yolo-based detector
+  conf_thres: 0.3
+  iou_thres: 0.4
+  max_det: 1
+  digit_model_type: "mobilenet"
+  digit_weights_path: "weights/armor_pattern.pth"
+
+tracker:
+  type: "CascadeMatchTracker"
+  point_guesser_config_path: "config/guess_pts.yaml"
+
+device: "cuda"
+transform:
+  # 以下是demo射线投影所用的相机参数
+  # 如果你要跑射线投影的demo,请务必修改以下参数为你的相机参数
+  # K: [[2500.0, 0.0, 1536.0], [0.0, 2500.0, 1024.0], [0.0, 0.0, 1.0]]
+  # dist_coeffs: [0.0, 0.0, 0.0, 0.0, 0.0]
+
+  # 以下是ENTERPRIZE 2025赛季雷达站的实际相机参数
+  # 如果你要使用ENTERPRIZE开源的第视角视频,请务必修改以下参数为你的相机参数
+  K: [[5033.780199, 0.000000, 2829.234535],
+      [0.000000, 5036.139955, 1929.489557],
+      [0.000000, 0.000000, 1.000000]]
+  dist_coeffs: [-0.061883, 0.104794, 0.000434, -0.000036, 0.000000]
+  verbose: true
+
+  ## The below parameters are only used for mimic or demostration purposes
+  R: [[    0.99076,   -0.043817,    -0.12833],
+      [  -0.014356,    -0.97493,     0.22204],
+      [   -0.13484,    -0.21815,    -0.96656]]
+  t: [     [-0.11],     [0.42984],      [15.928]]
+  demo_img_path: "videos/first_frame.png"
+
+field:
+  # mesh_path: "field/RMUC2025_National.PLY"       ## 全国赛场地文件
+  # keypoints: "transform/keypoint_6.txt"          ## 全国赛场地关键点文件
+  # 如果你要跑射线投影的demo,请务必把场地文件和关键点文件改成区域赛版本的
+  mesh_path: "field/RMUC2025_Regional.PLY"     ## 区域赛场地文件
+  keypoints: "transform/keypoint_6_region.txt" ## 区域赛场地关键点文件
+  
+referee:
+  port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
+  # port: "/dev/pts/9"
+  baudrate: 115200            ## 串口波特率
+
+debug:
+  inference_video: true #true                   # 是否启用视频推理
+  video_source: "/home/etmphile/桌面/RM2025-Radar-Algorithm/videos/HarbinU.mp4"  # 视频源路径
+  streaming_video: false                  # 是否录制视频
+
+
+  
+
+
+
+
+
+
+
+
+
+
