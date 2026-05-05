@@ -55,10 +55,13 @@ def load_yaml_config(path: str):
 
 
 if __name__ == "__main__":
+
+    # 1. get arguments, initialize rospy
     args = get_parser()
     yaml_config = load_yaml_config('config/params.yaml')
     rclpy.init()
 
+    # 2. create camera
     if yaml_config["debug"]["inference_video"]:
         from driver.hik_camera.mock_hik import SimpleHikCamera
         camera = SimpleHikCamera(
@@ -68,10 +71,12 @@ if __name__ == "__main__":
         from driver.hik_camera.hik import SimpleHikCamera
         camera = SimpleHikCamera(args)
 
+    # 3. create referee and start it (UART communication)
     referee = RefereeCommManager(port=yaml_config["referee"]["port"],
                                 baudrate=yaml_config["referee"]["baudrate"])
     referee.start()
 
+    # 4. main event loop start
     event_loop = MainEventLoop(
         camera = camera, referee=referee
     )
@@ -81,6 +86,7 @@ if __name__ == "__main__":
     if not yaml_config["debug"]["inference_video"] and yaml_config["debug"]["streaming_video"]:
         camera.start_saving_threads()
 
+    # 5. launch the GUI
     launch()
     import time
 

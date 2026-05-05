@@ -21,7 +21,7 @@ class RadarStationMainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("RoboMaster 2025 雷达站控制界面")
+        self.setWindowTitle("RoboMaster 2026 雷达站控制界面")
         self.setGeometry(100, 100, 2048, 1534)
 
         # 初始化UI组件
@@ -2260,7 +2260,6 @@ def launch():
     home = os.path.expanduser("~")
     qt_plugin_path = os.path.join(home, "miniconda3/envs/radar/lib/python3.10/site-packages/PyQt5/Qt5/plugins")
     
-    print(QCoreApplication.libraryPaths())
     QCoreApplication.setLibraryPaths([qt_plugin_path])
     
     os.environ["QT_PLUGIN_PATH"] = qt_plugin_path

@@ -315,17 +315,17 @@ class MainEventLoop:
             self.faction = self.referee.get_faction()
 
             try:
-                # Get the latest frame from the camera
+                # =============== Step 1: Get the latest frame from the camera ===============
                 frame, time_stamp = self.camera.get_image_latest("tracker", timeout=0.1)
                 if frame is None:
                     # logger.warning("No frame received from camera, skipping iteration.")
                     continue
-                # Process the frame with the tracker
+                # =============== Step 2: Process the frame with the tracker ===============
                 self.tracks, self.detect_vis_img, self.track_vis_img = (
                     self.tracker.track(frame, faction=self.faction)
                 )
 
-                # Get faction of the image
+                # =============== Step 3: Get faction of the image ===============
                 for track in self.tracks:
                     if track.is_active:                      
                         self.divisions_pos[track.class_id] = RefereeDivision2dPosition(
@@ -345,7 +345,7 @@ class MainEventLoop:
                         self.divisions_pos[track.class_id] = RefereeDivision2dPosition(
                             x=-1, y=-1, is_valid=False
                         )
-                ## send the message to the sentry and the referee
+                # =============== Step 4: send the message to the sentry and the referee ===============
                 self.referee.radar2sentry_msg = self.pack_radar2sentrymsg()
                 self.referee.radar2client_msg = self.pack_radar2clientmsg()
             

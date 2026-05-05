@@ -46,6 +46,11 @@ class PixelToWorld:
 
     @classmethod
     def build_from_config(self, config):
+        '''
+        Building the pixelToWorld object from config file
+        Load camera matrix/transformation matrix/translation vector
+        Load arena PLY file
+        '''
         pixel_world_transform = PixelToWorld(
             camera_matrix=np.array(config["transform"]["K"]),
             R=np.array(config["transform"]["R"]),
@@ -67,8 +72,8 @@ class PixelToWorld:
         return pixel_world_transform
 
     def pixel_to_world(self, pixel):
-        u, v = pixel
-        pixel_hom = np.array([u, v, 1.0], dtype=np.float64)
+        u, v = pixel # pixel coordinates u, v
+        pixel_hom = np.array([u, v, 1.0], dtype=np.float64) # homogeneous coordinates of pixel
         if self.dist_coeffs is not None and not np.all(self.dist_coeffs == 0):
             points = np.array([[u, v]], dtype=np.float32).reshape(-1, 1, 2)
             undistorted = cv2.undistortPoints(
@@ -76,12 +81,12 @@ class PixelToWorld:
             )
             u, v = undistorted[0, 0]
             pixel_hom = np.array([u, v, 1.0], dtype=np.float64)
-        cam_dir = np.linalg.inv(self.camera_matrix) @ pixel_hom
-        world_dir = self.R.T @ cam_dir
-        origin = -self.R.T @ self.T.flatten()
+        cam_dir = np.linalg.inv(self.camera_matrix) @ pixel_hom # Camera direction (directional vector)
+        world_dir = self.R.T @ cam_dir # the ray in world coordinate
+        origin = -self.R.T @ self.T.flatten() # the camera position in world coordinate
         rays = o3d.core.Tensor([[*origin, *world_dir]], dtype=o3d.core.Dtype.Float32)
         result = self.scene.cast_rays(rays)
-        t_hit = result["t_hit"].numpy()[0]
+        t_hit = result["t_hit"].numpy()[0] # distance for the ray to hit the scene
         # print(
         #     f"Pixel: ({u:.1f}, {v:.1f}), Ray Center: {origin}, Ray Direction: {world_dir}, Hit Distance: {t_hit}"
         # )

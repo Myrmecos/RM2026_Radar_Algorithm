@@ -42,3 +42,6 @@ go to ~/ros_ws/
 4. referee serial port: 
     1. change in `params.yaml`, change `port`
     
+
+# Nvidia driver fail: simple solutions:
+sudo dkms install -m nvidia -v 580.119.02

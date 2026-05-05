@@ -82,6 +82,8 @@ class BaseDetector:
             for class_id, class_name in enumerate(self.class_names[:10])
         ]
     
+    # Transforms from image pixel coordinates to world coordinates
+    # xyxy: lower and upper bounds for the object's bbox
     def xyxy2pos3d(self, xyxy):
         x1, y1, x2, y2 = xyxy
         xo, yo = (x1 + x2) * 0.5, y2

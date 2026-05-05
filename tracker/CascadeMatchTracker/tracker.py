@@ -158,10 +158,11 @@ class CascadeMatchTracker(BaseDetector):
         if self.frame_count > 1:
             self.real_dt = now - self.last
         self.last = now
-        ## step1: run detection and initialize botid trajectory
-
+        
+        ## =============== step 1: run detection and initialize botid trajectory ===============
         detections, detect_vis_img = self.detect(img)
         
+        #  step 1.1: for each detection result, update the info 
         for det in detections:
             if det.bot_id not in self.bot_id_trajectories:
                 # self.bot_id_trajectories[det.bot_id] = BotIdTrack(
@@ -179,7 +180,7 @@ class CascadeMatchTracker(BaseDetector):
                     self.bot_id_trajectories[det.bot_id].update(-1, 1.0)  # Update with -1 if not updated
             self.bot_id_trajectories[det.bot_id].updated = True
         
-        # 收集需删除的bot_id
+        #  Step 1.2.: 收集需删除的bot_id, delete the bots 
         to_delete = []
         for bot_id_trajectory in self.bot_id_trajectories.values():
             if not bot_id_trajectory.updated:
@@ -199,7 +200,7 @@ class CascadeMatchTracker(BaseDetector):
                 
         # detections = self.nms(detections, iou_threshold=0.5)
 
-        ## step2: Kalman filter state interpolation for tracks that is TENTATIVE or CONFIRMED
+        ## =============== step2: Kalman filter state interpolation for tracks that is TENTATIVE or CONFIRMED ===============
         for track in self.tracks:
             if track.state in [State.LOST, State.CONFIRMED]:
                 track.pos_2d_uwb = track.kalman_filter_2d.predict(dt = self.real_dt)[0]
@@ -212,7 +213,7 @@ class CascadeMatchTracker(BaseDetector):
                 track.kalman_filter_2d.update(track.pos_2d_uwb_det)
                 
 
-        ## step3: Match detections with existing tracks
+        ## =============== step3: Match detections with existing tracks ===============
 
         ## i): Build the cost matrix
         N, M = len(detections), len(self.tracks)
@@ -240,16 +241,23 @@ class CascadeMatchTracker(BaseDetector):
             if track not in [mt[0] for mt in matched_track_det]
         ]
 
-        ## step4: Update the track based on the matching
+        ## =============== step4: Update the track based on the matching ===============
         ## Matched tracks
+        # **状态机设计**：
+        # - **INACTIVE**：目标池中未激活的兵种槽位
+        # - **TENTATIVE**：新检测到的候选目标，需连续匹配确认
+        # - **CONFIRMED**：已确认的稳定追踪目标
+        # - **LOST**：暂时丢失但保持预测的目标
         for track, det in matched_track_det:
-            track.is_dead = True if det.class_id >= 10 else False
+            track.is_dead = True if det.class_id >= 10 else False # class_id = 10-14, dead
             match track.state:
                 case State.INACTIVE:
+                    # newly detected: tentative state
                     track.state = State.TENTATIVE
                     track.hit_count = 0
                     track.inacitve_count = 0
                 case State.TENTATIVE:
+                    # if multiple tentative states, we upgrade it to a hit.
                     track.hit_count += 1
                     if track.hit_count >= self.HIT_COUNT_THRESHOLD:
                         track.is_active = True
@@ -257,8 +265,8 @@ class CascadeMatchTracker(BaseDetector):
                         initial_xywh = xyxy2xywh(det.car_box)
                         initial_pos_3d = self.xyxy2pos3d(det.car_box)
                         initial_pos_2d_uwb = solidwork2uwb(initial_pos_3d, faction)
-                        track.kalman_filter.reset(initial_xywh)
-                        track.kalman_filter_2d.reset(initial_pos_2d_uwb)
+                        track.kalman_filter.reset(initial_xywh) # initialize Kalman filter state
+                        track.kalman_filter_2d.reset(initial_pos_2d_uwb) # initialize kalman filter 2d.
                 case State.CONFIRMED:
                     ## Associate the bot id with the track
                     track.is_active = True
@@ -302,7 +310,7 @@ class CascadeMatchTracker(BaseDetector):
                     track.miss_count = 0
                     track.state = State.CONFIRMED
                     track.bot_id = det.bot_id
-
+        # robots that don't show up in new images
         for track in unmatched_tracks:
             match track.state:
                 case State.INACTIVE:
