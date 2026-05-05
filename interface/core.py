@@ -411,7 +411,7 @@ class RadarStationMainWindow(QMainWindow):
             )
             pixmap = QPixmap.fromImage(q_image)
             pixmap = pixmap.scaled(
-                self.target_camera_size, Qt.IgnoreAspectRatio, Qt.FastTransformation
+                self.target_camera_size, Qt.KeepAspectRatio, Qt.FastTransformation
             )
             label_widget.setPixmap(pixmap)
         else:

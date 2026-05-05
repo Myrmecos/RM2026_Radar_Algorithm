@@ -161,12 +161,14 @@ class BaseDetector:
         return detections, vis_img
 
     def _get_visualized_img(self, img, detections):
-        vis_img = cv2.resize(img, (1024, 768), interpolation=cv2.INTER_LINEAR)
+        #5472//5
+        #3648//5
+        vis_img = cv2.resize(img, (1094, 730), interpolation=cv2.INTER_LINEAR)
     
         # 计算缩放比例，用于调整边界框坐标
         original_height, original_width = img.shape[:2]
-        scale_x = 1024 / original_width
-        scale_y = 768 / original_height
+        scale_x = 1094 / original_width
+        scale_y = 730 / original_height
         
         # 后续代码保持不变，但需要调整边界框坐标
         height, width = vis_img.shape[:2]  # 现在是768, 1024
