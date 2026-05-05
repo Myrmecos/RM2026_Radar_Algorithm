@@ -762,10 +762,10 @@ class RadarStationMainWindow(QMainWindow):
 
             result_text = f"校准成功! 残差: {residual:.4f}\n"
             result_text += f"旋转矩阵 R:\n"
-            result_text += f"[{R[0,0]:.4f} {R[0,1]:.4f} {R[0,2]:.4f}]\n"
-            result_text += f"[{R[1,0]:.4f} {R[1,1]:.4f} {R[1,2]:.4f}]\n"
-            result_text += f"[{R[2,0]:.4f} {R[2,1]:.4f} {R[2,2]:.4f}]\n\n"
-            result_text += f"平移向量 t:\n[{t[0,0]:.4f} {t[1,0]:.4f} {t[2,0]:.4f}]"
+            result_text += f"[[{R[0,0]:.4f}, {R[0,1]:.4f}, {R[0,2]:.4f}],\n"
+            result_text += f"[{R[1,0]:.4f}, {R[1,1]:.4f}, {R[1,2]:.4f}],\n"
+            result_text += f"[{R[2,0]:.4f}, {R[2,1]:.4f}, {R[2,2]:.4f}]]\n\n"
+            result_text += f"平移向量 t:\n[[{t[0,0]:.4f}], [{t[1,0]:.4f}], [{t[2,0]:.4f}]]"
 
             self.calibration_result.setText(result_text)
         else:
