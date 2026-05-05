@@ -16,9 +16,29 @@
 # pyqt problem: core.py launch() hardcoded pyqt's path to the developer's home dir! Change it to yours
 
 # run code: 
+0. source ros_setup.bash
 1. python main.py --config config/params.yaml --device_config config/device.yaml
 2. mark keypoints: demo/demo1.png
+
+# use camera or video? see:
+params.yaml, debug, inference_video.
 
 # todo
 1. communication with referee
 2. training better car detection
+
+# calibration
+go to ~/ros_ws/
+
+# What to chagne to adapt to new environment
+1. image visualization
+    1. in core.py, change: `self.field_image = cv2.imread("./field/RMUC2026.png")`
+    2. lower-right is (0, 0); upper left is (1500, 2800)
+2. camera intrinsic
+    1. in `params_2026.yaml`, change `K` and `dist_coeffs`
+3. field positions
+    1. in `params_2026.yaml`, change `mesh_path` and `keypoints`
+    2. set `inference_video` to `false`
+4. referee serial port: 
+    1. change in `params.yaml`, change `port`
+    

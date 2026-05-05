@@ -44,6 +44,7 @@ def get_parser():
     cfg = load_cfg_from_cfg_file(args.device_config)
     if args.opts is not None:
         cfg = merge_cfg_from_list(cfg, args.opts)
+    # cfg['config'] = args.config
     return cfg
 
 def load_yaml_config(path: str):
@@ -55,7 +56,7 @@ def load_yaml_config(path: str):
 
 if __name__ == "__main__":
     args = get_parser()
-    yaml_config = load_yaml_config("config/params.yaml")
+    yaml_config = load_yaml_config('config/params.yaml')
     rclpy.init()
 
     if yaml_config["debug"]["inference_video"]:
@@ -67,22 +68,22 @@ if __name__ == "__main__":
         from driver.hik_camera.hik import SimpleHikCamera
         camera = SimpleHikCamera(args)
 
-    referee = RefereeCommManager(port=yaml_config["referee"]["port"], 
-                                baudrate=yaml_config["referee"]["baudrate"])   
+    referee = RefereeCommManager(port=yaml_config["referee"]["port"],
+                                baudrate=yaml_config["referee"]["baudrate"])
     referee.start()
 
     event_loop = MainEventLoop(
         camera = camera, referee=referee
     )
     camera.start_streaming()
-    
-    
+
+
     if not yaml_config["debug"]["inference_video"] and yaml_config["debug"]["streaming_video"]:
         camera.start_saving_threads()
 
     launch()
     import time
-    
+
     ## do not terminate the main eventloop
     try:
         while True:
@@ -94,5 +95,5 @@ if __name__ == "__main__":
         camera.stop_saving_images()
         camera.close()
         event_loop.stop()
-        
-        
+
+

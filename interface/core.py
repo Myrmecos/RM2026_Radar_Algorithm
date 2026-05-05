@@ -813,7 +813,7 @@ class FieldProjectionWidget(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.field_image = cv2.imread("./field/field_image.png")
+        self.field_image = cv2.imread("./field/field_grid.png")
         if self.field_image is not None:
             self.field_image = cv2.rotate(
                 self.field_image, cv2.ROTATE_90_COUNTERCLOCKWISE
