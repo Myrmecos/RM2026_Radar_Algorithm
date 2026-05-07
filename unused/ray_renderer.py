@@ -42,6 +42,7 @@ class PixelToWorld:
         self.edge_lineset.paint_uniform_color([1, 0, 1])  # Purple edges
 
         self.scene = o3d.t.geometry.RaycastingScene()
+        print(f"Mesh stats: {len(self.mesh.vertices)} vertices, {len(self.mesh.triangles)} triangles")
         self.scene.add_triangles(o3d.t.geometry.TriangleMesh.from_legacy(self.mesh))
 
     @classmethod

@@ -45,3 +45,9 @@ go to ~/ros_ws/
 
 # Nvidia driver fail: simple solutions:
 sudo dkms install -m nvidia -v 580.119.02
+
+# Adapting the ply file to the code
+1. unused/ply_downsample.py: downsample the ply file to fewer points
+2. unused/ply_rotate: rotate ply model to correct orientation (shorter edge towards us)
+3. unused/ply_resize: resize the ply model (originally in mm, now in m)
+

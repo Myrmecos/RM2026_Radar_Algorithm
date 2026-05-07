@@ -4,7 +4,7 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-
+import open3d as o3d
 
 # load the settings
 with open("config/params_project_test_lab.yaml", "r") as f:
@@ -15,13 +15,8 @@ K = camera_matrix
 R=np.array(config["transform"]["R"])
 T=np.array(config["transform"]["t"])
 dist_coeffs=np.array(config["transform"]["dist_coeffs"])
+mesh_path = config['field']['mesh_path']
 
-# ==================== TODO: Load PLY ====================
-
-import open3d as o3d
-pcd = o3d.io.read_point_cloud("field/RMUC2025_Regional.PLY")
-points = np.asarray(pcd.points)
-print(f"Loaded {len(points)} points using Open3D")
 
 # TODO: visualize it (with specific camera matrix K, rotation matrix R, translation matrix t) and save it as an image (field/RMUC2026.jpg)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -36,6 +31,7 @@ height = int(K[1, 2] * 2)
 
 # 2. Load Mesh using Open3D (more robust for PLY binary formats)
 mesh_path = config["field"]["mesh_path"]
+print("loading mesh:", mesh_path)
 o3d_mesh = o3d.io.read_triangle_mesh(mesh_path)
 
 # Convert Open3D mesh to Pyrender Mesh
