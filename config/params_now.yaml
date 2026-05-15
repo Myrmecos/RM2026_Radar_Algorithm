@@ -52,9 +52,9 @@ field:
   # keypoints: "transform/keypoint_6.txt"          ## 全国赛场地关键点文件
   # 如果你要跑射线投影的demo,请务必把场地文件和关键点文件改成区域赛版本的
   # mesh_path: "field/RMUC2025_Regional.PLY"     ## 区域赛场地文件
-  mesh_path: "field/RMUC2026.ply"
+  mesh_path: "field/RMUC2026_oriented_scaled_centered.ply"
   # mesh_path: "field/RMUC2025_National.PLY"
-  keypoints: "transform/keypoint_6.txt" ## 区域赛场地关键点文件
+  keypoints: "transform/keypoint_6_region.txt" ## 区域赛场地关键点文件
   
 referee:
   port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
@@ -63,7 +63,8 @@ referee:
 
 debug:
   inference_video: true #true                   # 是否启用视频推理
-  video_source: "/home/etmphile/Desktop/img_to_vid/mock_tilted.mp4"  # 视频源路径
+  video_source: "/home/etmphile/Desktop/img_to_vid/mock.mp4"  # 视频源路径
+  # video_source: "/home/etmphile/桌面/RM2025-Radar-Algorithm/videos/HarbinU.mp4"
   streaming_video: false                  # 是否录制视频
 
 
