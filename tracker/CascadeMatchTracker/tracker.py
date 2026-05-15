@@ -159,6 +159,7 @@ class CascadeMatchTracker(BaseDetector):
             self.real_dt = now - self.last
         self.last = now
         
+        # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DEBUG: TRACKER is being called")
         ## =============== step 1: run detection and initialize botid trajectory ===============
         detections, detect_vis_img = self.detect(img)
         
@@ -209,6 +210,7 @@ class CascadeMatchTracker(BaseDetector):
                 track.box_trajectories.append(xyxy)
                 track.car_box = xyxy
                 track.pos_3d = self.xyxy2pos3d(xyxy)
+                print(">>>>>>>>>>>>>>> DEBUG: track pos in image: ", xyxy, "track pos in 3d: ", track.pos_3d)
                 track.pos_2d_uwb_det = solidwork2uwb(track.pos_3d, faction)
                 track.kalman_filter_2d.update(track.pos_2d_uwb_det)
                 

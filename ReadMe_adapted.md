@@ -19,6 +19,7 @@
 0. source ros_setup.bash
 1. python main.py --config config/params.yaml --device_config config/device.yaml
 2. mark keypoints: demo/demo1.png
+3. specify own 3d keypoints: hardcoded, in transform/keypoint_6.txt. The name specified in yaml file does not count, as the keypoint_6.txt is hardcoded.
 
 # use camera or video? see:
 params.yaml, debug, inference_video.

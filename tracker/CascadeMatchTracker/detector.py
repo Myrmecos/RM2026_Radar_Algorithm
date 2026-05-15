@@ -91,6 +91,9 @@ class BaseDetector:
             position_3d := self.pixel_world_transform.pixel_to_world([xo, yo])
         ) is None:
             position_3d = np.array([0.0, 0.0, 0.0])
+        print("DEBUG: R matrix; ", self.pixel_world_transform.R)
+        print("DEBUG: T matrix; ", self.pixel_world_transform.T)
+        print("=================== DEBUG: pixel to world ", [xo, yo], "->", position_3d)
         return position_3d.tolist()
 
     def detect(
@@ -124,6 +127,7 @@ class BaseDetector:
         for armor_detections, car_detection in zip(armor_detections, car_detections):
             _, car_box, car_conf, track_id = car_detection
             car_box = list(map(int, car_box))
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DEBUG: car box in image: ", car_box)
             
             position_3d = self.xyxy2pos3d(car_box)
 
@@ -235,10 +239,12 @@ if __name__ == "__main__":
     pixel_world_transform = PixelToWorld.build_from_config(config)
     tracker = BaseDetector(config, pixel_world_transform, visualize=True)
 
-    img = cv2.imread("test_assets/ustgz_0.jpg")
+    img = cv2.imread("/home/etmphile/Desktop/img_to_vid/test.png")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     result, vis_img = tracker.detect(img)
     vis_img = cv2.cvtColor(vis_img, cv2.COLOR_RGB2BGR)
     vis_img = cv2.resize(vis_img, (1536, 1024))
-    cv2.imshow("Detection Result", vis_img)
-    cv2.waitKey(0)
+    import matplotlib.pyplot as plt
+    cv2.imwrite("/home/etmphile/Desktop/img_to_vid/test_vis.png", vis_img)
+    # cv2.imshow("Detection Result", vis_img)
+    # cv2.waitKey(0)
