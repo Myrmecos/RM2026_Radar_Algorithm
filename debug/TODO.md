@@ -11,3 +11,8 @@
 3. check the coordinates: what is the reference 0 position of world coordinate? What are the x, y, and z? Check the manual.
 4. check the referee communication system: I think we only need to check the two sending parts?
 5. check the double vulnerability conditions
+
+
+# What to do in the future: 
+1. better Deep Learning models
+2. mor e precise 3D localities
