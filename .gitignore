@@ -31,3 +31,5 @@ __pycache__
 !/tracker/warmup_image.jpg
 !/demo/*.jpg
 !/demo/*.png
+referee_logs/*
+ssd/*
