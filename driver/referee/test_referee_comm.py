@@ -18,7 +18,9 @@ def sentry2radar_message_decode_func(cmd_id, data):
 
 
 if __name__ == "__main__":
-    serial_manager = RefereeSerialManager(port="/dev/ttyUSB0", baudrate=115200)
+    import rclpy
+    rclpy.init()
+    serial_manager = RefereeSerialManager(port="/dev/ttyV0", baudrate=115200)
     serial_manager.bind(MsgID.ROBOT_DATA.value, status_message_decode_func)
     serial_manager.bind(MsgID.INTERACTIVE_DATA.value, sentry2radar_message_decode_func)
     serial_manager.start()
@@ -42,5 +44,26 @@ if __name__ == "__main__":
             flags=2,
         )
         serial_manager.summarize()
-        serial_manager.tx(sentry_msg.pack())
-        time.sleep(1.0)
+        # # print len of the packed message
+        # print(f"Sending Sentry2RadarMessage: {sentry_msg}")
+        # print(f"Length of packed message: {len(sentry_msg.pack())}")
+        # print(sentry_msg.pack().hex())
+        data_to_send = sentry_msg.pack()
+        print("Sending data: ", data_to_send.hex())
+        print("len of data to send: ", len(data_to_send))
+        serial_manager.tx(data_to_send)
+        time.sleep(1)
+
+        # # compose some data to send
+        # all bytes should be 42
+        data = bytearray(58)
+        for i in range(58):
+            data[i] = 0x42
+        data[0] = 0xA5  # header
+        data[5] = 0x00
+        # pack the message "data" and send it
+        print(f"Sending fake data: {data.hex()}")
+        print("len of fake data: ", len(data))
+        data = bytes(data)  # convert to bytes
+        serial_manager.tx(data)
+        time.sleep(1)

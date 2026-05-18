@@ -693,7 +693,8 @@ class RadarDecisionMessage(InteractiveStructMessage):
     STRUCT_CLASS = RadarDecisionData
     SUB_CMD_ID = SubCmdID.RADAR_DECISION.value
 
-    def __init__(self, is_blue=True, **kwargs):
+    def __init__(self, is_blue=True, 
+                 **kwargs):
         sender_id = OBJECT_ID.B_RADAR.value if is_blue else OBJECT_ID.R_RADAR.value
         receiver_id = OBJECT_ID.SERVER.value
         super().__init__(sender_id, receiver_id, **kwargs)

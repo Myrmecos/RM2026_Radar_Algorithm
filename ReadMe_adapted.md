@@ -36,11 +36,13 @@ go to ~/ros_ws/
     1. in core.py, change: `self.field_image = cv2.imread("./field/RMUC2026.png")`
     2. lower-right is (0, 0); upper left is (1500, 2800)
 2. camera intrinsic
-    1. in `params_2026.yaml`, change `K` and `dist_coeffs`
-3. field positions
-    1. in `params_2026.yaml`, change `mesh_path` and `keypoints`
+    1. in `params.yaml`, change `K` and `dist_coeffs`
+3. field model
+    1. change `params.yaml`'s mesh path to your model, e.g. `field/RMUC2026.ply`
+    2. change the calib points `transform/keypoint_6.txt`. This part is hardcoded and yaml file is of no use.
+4. Inference mode
     2. set `inference_video` to `false`
-4. referee serial port: 
+5. referee serial port: 
     1. change in `params.yaml`, change `port`
     
 
@@ -52,3 +54,6 @@ sudo dkms install -m nvidia -v 580.119.02
 2. unused/ply_rotate: rotate ply model to correct orientation (shorter edge towards us)
 3. unused/ply_resize: resize the ply model (originally in mm, now in m)
 
+
+# testing communication
+1. sudo socat -d -d PTY,link=/dev/ttyV0,raw,echo=0 PTY,link=/dev/ttyV1,raw,echo=0
