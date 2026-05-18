@@ -306,7 +306,9 @@ class InterRobotMessage(InteractiveMessage):
         self.receiver_id = receiver_id
 
 
-class Sentry2RadarData(ctypes.Structure):
+# ==================== Start of data structure definitions ==============
+# a self-defined interactive message from sentry to radar
+class Sentry2RadarData(ctypes.Structure): # PROBLEM: DO WE RECEIVE THIS DATA?
     """
     Sentry to Radar data structure.
     This structure is used to send data from sentry to radar.
@@ -327,8 +329,8 @@ class Sentry2RadarData(ctypes.Structure):
         ("flag", ctypes.c_uint8),  # Flags for received
     ]
 
-
-class Radar2SentryData(ctypes.Structure):
+# a self-defined interactive message from radar to sentry
+class Radar2SentryData(ctypes.Structure): # PROBLEM: DO WE NEED TO SERND TO SENTrY?
     """
     Radar to Sentry data structure.
     This structure is used to send data from radar to sentry.
@@ -351,7 +353,10 @@ class Radar2SentryData(ctypes.Structure):
     ]
 
 
-class DartStatData(ctypes.Structure):
+
+# >>>>>>>>>>>>>>> received message <<<<<<<<<<<<<<<
+# an official message from server to radar
+class DartStatData(ctypes.Structure): # Corrected, 0x0105
     """
     Dart status data structure.
     This structure is used to receive launcher status
@@ -360,36 +365,44 @@ class DartStatData(ctypes.Structure):
     _pack_ = 1
     _fields_ = [
         ("dart_remaining_time", ctypes.c_uint8),  # Remaining time for the dart
-        ("recent_hit_target", ctypes.c_uint8, 3),  # Recent hit target (2 bits)
-        ("accumulated_hit_count", ctypes.c_uint8, 3),  # Accumulated hit count (2 bits)
+        ("recent_hit_target", ctypes.c_uint8, 3),  # Recent hit target (2 bits), bit 0-2
+        ("accumulated_hit_count", ctypes.c_uint8, 3),  # Accumulated hit count (2 bits), bit 3-5
         (
             "selected_target",
             ctypes.c_uint8,
-            2,
-        ),  # Selected target (2 bits). Use to trigger the double vulnerability
-        ("reserve", ctypes.c_uint8, 8),  # Reserved for future use, 8 bits
+            3,
+        ),  # Selected target (2 bits). Use to trigger the double vulnerability, bit 6-8
+        ("reserve", ctypes.c_uint8, 7),  # Reserved for future use, bit 9-15
     ]
 
-
-class RadarMarkProgressData(ctypes.Structure):
+# an official message from server to radar
+class RadarMarkProgressData(ctypes.Structure): # modified 0x020C
     """
     Mark progress data structure.
     """
 
     _pack_ = 1
     _fields_ = [
-        ("enemy_hero", ctypes.c_uint8, 1),  # Enemy hero marked (1 bit)
-        ("enemy_engineer", ctypes.c_uint8, 1),  # Enemy engineer marked
-        ("enemy_standard_3", ctypes.c_uint8, 1),  # Enemy standard
-        ("enemy_standard_4", ctypes.c_uint8, 1),  # Enemy standard 4 marked
-        ("enemy_sentry", ctypes.c_uint8, 1),  # Enemy sentry marked
-        ("reserve", ctypes.c_uint8, 3),  # Reserved bits for future use
+        ("enemy_hero", ctypes.c_uint16, 1),  # Enemy hero marked (1 bit)
+        ("enemy_engineer", ctypes.c_uint16, 1),  # Enemy engineer marked
+        ("enemy_standard_3", ctypes.c_uint16, 1),  # Enemy standard
+        ("enemy_standard_4", ctypes.c_uint16, 1),  # Enemy standard 4 marked
+        ("enemy_aerial", ctypes.c_uint16, 1),  # Enemy aerial marked
+        ("enemy_sentry", ctypes.c_uint16, 1),  # Enemy sentry marked
+        ("ally_hero", ctypes.c_uint16, 1),  # Ally hero marked
+        ("ally_engineer", ctypes.c_uint16, 1),  # Ally engineer marked
+        ("ally_standard_3", ctypes.c_uint16, 1),  # Ally standard 3 marked
+        ("ally_standard_4", ctypes.c_uint16, 1),  # Ally standard 4 marked
+        ("ally_aerial", ctypes.c_uint16, 1),  # Ally aerial marked
+        ("ally_sentry", ctypes.c_uint16, 1),  # Ally sentry marked
+        ("reserve", ctypes.c_uint16, 4),  # Reserved for future use (4 bits)
     ]
 
-
-class RadarInfoData(ctypes.Structure):
+# an official message from server to radar
+class RadarInfoData(ctypes.Structure): #CORRECTED, 0x020E
     """
     Radar Info data structure
+    Rx
     """
 
     _pack_ = 1
@@ -398,19 +411,25 @@ class RadarInfoData(ctypes.Structure):
             "double_vulnerability_count",
             ctypes.c_uint8,
             2,
-        ),  # Double vulnerability status (1 bit)
+        ),  # Double vulnerability status (1 bit) bit 0-1
         (
             "is_double_vulnerability",
             ctypes.c_uint8,
             1,
-        ),  # Is double vulnerability (1 bit)
-        ("reserve", ctypes.c_uint8, 5),  # Reserved bits for future use
+        ),  # Is double vulnerability (1 bit), bit 2
+        ("encrypted_level", ctypes.c_uint8, 2),  # Encrypted level (1 bit), bit 3-4
+        ("can_modify_passwd", ctypes.c_uint8, 1),  # Can modify password (1 bit), bit 5
+        ("reserve", ctypes.c_uint8, 2),  # Reserved bits for future use, bit 6-7
     ]
 
-
-class RobotStatusData(ctypes.Structure):
+# an official message from server to radar
+# about radar's status
+# for checking radar's faction
+class RobotStatusData(ctypes.Structure): #CHECKED, 0x0201
     """
     Robot status data structure. This status is to retrieve the faction of the robot.
+    10Hz
+    Rx
     """
 
     _pack_ = 1
@@ -439,29 +458,45 @@ class RobotStatusData(ctypes.Structure):
     ]
 
 
-class Radar2ClientData(ctypes.Structure):
+
+
+# >>>>>>>>>>>>>>> sent message <<<<<<<<<<<<<<<
+# message from radar to client
+class Radar2ClientData(ctypes.Structure): #CORRECTED， 0x0305
     """
     Radar to client data structure
     """
 
     _pack_ = 1
     _fields_ = [
-        ("hero_x", ctypes.c_uint16),  # Enemy Hero X position
-        ("hero_y", ctypes.c_uint16),  # Enemy Hero Y position
-        ("engineer_x", ctypes.c_uint16),  # Enemy Engineer X position
-        ("engineer_y", ctypes.c_uint16),  # Enemy Engineer Y position
-        ("standard_3_x", ctypes.c_uint16),  # Enemy Standard 3 X position
-        ("standard_3_y", ctypes.c_uint16),  # Enemy Standard 3 Y position
-        ("standard_4_x", ctypes.c_uint16),  # Enemy Standard 4 X position
-        ("standard_4_y", ctypes.c_uint16),  # Enemy Standard 4 Y position
-        ("standard_5_x", ctypes.c_uint16),  # Enemy Standard 5 X position
-        ("standard_5_y", ctypes.c_uint16),  # Enemy Standard 5 Y position
-        ("sentry_x", ctypes.c_uint16),  # Enemy Sentry X position
-        ("sentry_y", ctypes.c_uint16),  # Enemy Sentry Y position
+        ("opponent_hero_x", ctypes.c_uint16),  # Enemy Hero X position
+        ("opponent_hero_y", ctypes.c_uint16),  # Enemy Hero Y position
+        ("opponent_engineer_x", ctypes.c_uint16),  # Enemy Engineer X position
+        ("opponent_engineer_y", ctypes.c_uint16),  # Enemy Engineer Y position
+        ("opponent_infantry_3_x", ctypes.c_uint16),  # Enemy Standard 3 X position
+        ("opponent_infantry_3_y", ctypes.c_uint16),  # Enemy Standard 3 Y position
+        ("opponent_infantry_4_x", ctypes.c_uint16),  # Enemy Standard 4 X position
+        ("opponent_infantry_4_y", ctypes.c_uint16),  # Enemy Standard 4 Y position
+        ("opponent_aerial_x", ctypes.c_uint16),  # Enemy Standard 5 X position
+        ("opponent_aerial_y", ctypes.c_uint16),  # Enemy Standard 5 Y position
+        ("opponent_sentry_x", ctypes.c_uint16),  # Enemy Sentry X position
+        ("opponent_sentry_y", ctypes.c_uint16),  # Enemy Sentry Y position
+        ("ally_hero_x", ctypes.c_uint16),  # Enemy Hero X position
+        ("ally_hero_y", ctypes.c_uint16),  # Enemy Hero Y position
+        ("ally_engineer_x", ctypes.c_uint16),  # Enemy Engineer X position
+        ("ally_engineer_y", ctypes.c_uint16),  # Enemy Engineer Y position
+        ("ally_infantry_3_x", ctypes.c_uint16),  # Enemy Standard 3 X position
+        ("ally_infantry_3_y", ctypes.c_uint16),  # Enemy Standard 3 Y position
+        ("ally_infantry_4_x", ctypes.c_uint16),  # Enemy Standard 4 X position
+        ("ally_infantry_4_y", ctypes.c_uint16),  # Enemy Standard 4 Y position
+        ("ally_aerial_x", ctypes.c_uint16),  # Enemy Standard 5 X position
+        ("ally_aerial_y", ctypes.c_uint16),  # Enemy Standard 5 Y position
+        ("ally_sentry_x", ctypes.c_uint16),  # Enemy Sentry X position
+        ("ally_sentry_y", ctypes.c_uint16),  # Enemy Sentry Y position
     ]
 
-
-class RadarDecisionData(ctypes.Structure):
+# message from radar to client
+class RadarDecisionData(ctypes.Structure): #CORRECTED, 0x0121
     """
     Radar double vulnerability decision data structure
     """
@@ -469,8 +504,17 @@ class RadarDecisionData(ctypes.Structure):
     _pack_ = 1
     _fields_ = [
         ("radar_cmd", ctypes.c_uint8),  # Radar command (1 byte)
+        ("password_cmd", ctypes.c_uint8),
+        ("password_1", ctypes.c_uint8),
+        ("password_2", ctypes.c_uint8),
+        ("password_3", ctypes.c_uint8),
+        ("password_4", ctypes.c_uint8),
+        ("password_5", ctypes.c_uint8),
+        ("password_6", ctypes.c_uint8), # all others: 1 byte each
     ]
 
+
+# ================ Start of message classes ================
 
 class StructureMessage(BaseMsg):
     STRUCT_CLASS = None
@@ -613,62 +657,7 @@ class InteractiveStructMessage(BaseMsg):
         return text
 
 
-# 具体的消息类
-class RobotStatusMessage(StructureMessage):
-    STRUCT_CLASS = RobotStatusData
-
-    def __init__(self, **kwargs):
-        super().__init__(MsgID.ROBOT_DATA.value, **kwargs)
-
-    @classmethod
-    def _get_msg_id(cls):
-        return np.uint16(MsgID.ROBOT_DATA.value)
-
-
-class DartStatusMessage(StructureMessage):
-    STRUCT_CLASS = DartStatData
-
-    def __init__(self, **kwargs):
-        super().__init__(MsgID.LAUNCHER_DATA.value, **kwargs)
-
-    @classmethod
-    def _get_msg_id(cls):
-        return np.uint16(MsgID.LAUNCHER_DATA.value)
-
-
-class RadarMarkMessage(StructureMessage):
-    STRUCT_CLASS = RadarMarkProgressData
-
-    def __init__(self, **kwargs):
-        super().__init__(MsgID.RADAR_MARK_PROGRESS.value, **kwargs)
-
-    @classmethod
-    def _get_msg_id(cls):
-        return np.uint16(MsgID.RADAR_MARK_PROGRESS.value)
-
-
-class RadarInfoMessage(StructureMessage):
-    STRUCT_CLASS = RadarInfoData
-
-    def __init__(self, **kwargs):
-        super().__init__(MsgID.RADAR_DECISION_SYNC.value, **kwargs)
-
-    @classmethod
-    def _get_msg_id(cls):
-        return np.uint16(MsgID.RADAR_DECISION_SYNC.value)
-
-
-class Radar2ClientMessage(StructureMessage):
-    STRUCT_CLASS = Radar2ClientData
-
-    def __init__(self, **kwargs):
-        super().__init__(MsgID.CLIENT_RADAR_DATA.value, **kwargs)
-
-    @classmethod
-    def _get_msg_id(cls):
-        return np.uint16(MsgID.CLIENT_RADAR_DATA.value)
-
-
+# ================== 具体的消息类 ======================
 class Sentry2RadarMessage(InteractiveStructMessage):
     STRUCT_CLASS = Sentry2RadarData
     SUB_CMD_ID = SubCmdID.SENTRY_DECISION.value
@@ -678,7 +667,7 @@ class Sentry2RadarMessage(InteractiveStructMessage):
         receiver_id = OBJECT_ID.B_RADAR.value if is_blue else OBJECT_ID.R_RADAR.value
         super().__init__(sender_id, receiver_id, **kwargs)
 
-
+# in pack_radar2sentrymsg(). DO we need it?
 class Radar2SentryMessage(InteractiveStructMessage):
     STRUCT_CLASS = Radar2SentryData
     SUB_CMD_ID = SubCmdID.RADAR_2_SENTRY.value
@@ -689,6 +678,61 @@ class Radar2SentryMessage(InteractiveStructMessage):
         super().__init__(sender_id, receiver_id, **kwargs)
 
 
+class RobotStatusMessage(StructureMessage): # Rx message, check in referee_comm
+    STRUCT_CLASS = RobotStatusData
+
+    def __init__(self, **kwargs):
+        super().__init__(MsgID.ROBOT_DATA.value, **kwargs)
+
+    @classmethod
+    def _get_msg_id(cls):
+        return np.uint16(MsgID.ROBOT_DATA.value)
+
+
+class DartStatusMessage(StructureMessage): # Rx message, check in referee_comm
+    STRUCT_CLASS = DartStatData
+
+    def __init__(self, **kwargs):
+        super().__init__(MsgID.LAUNCHER_DATA.value, **kwargs)
+
+    @classmethod
+    def _get_msg_id(cls):
+        return np.uint16(MsgID.LAUNCHER_DATA.value)
+
+
+class RadarMarkMessage(StructureMessage): # Rx message, checked in referee_comm
+    STRUCT_CLASS = RadarMarkProgressData
+
+    def __init__(self, **kwargs):
+        super().__init__(MsgID.RADAR_MARK_PROGRESS.value, **kwargs)
+
+    @classmethod
+    def _get_msg_id(cls):
+        return np.uint16(MsgID.RADAR_MARK_PROGRESS.value)
+
+
+class RadarInfoMessage(StructureMessage): # Rx message, checked in referee_comm
+    STRUCT_CLASS = RadarInfoData
+
+    def __init__(self, **kwargs):
+        super().__init__(MsgID.RADAR_DECISION_SYNC.value, **kwargs)
+
+    @classmethod
+    def _get_msg_id(cls):
+        return np.uint16(MsgID.RADAR_DECISION_SYNC.value)
+
+# pack function checked (pack_radar2clientmsg)
+class Radar2ClientMessage(StructureMessage):
+    STRUCT_CLASS = Radar2ClientData
+
+    def __init__(self, **kwargs):
+        super().__init__(MsgID.CLIENT_RADAR_DATA.value, **kwargs)
+
+    @classmethod
+    def _get_msg_id(cls):
+        return np.uint16(MsgID.CLIENT_RADAR_DATA.value)
+
+# pack function checked (pack_radar_decision_message)
 class RadarDecisionMessage(InteractiveStructMessage):
     STRUCT_CLASS = RadarDecisionData
     SUB_CMD_ID = SubCmdID.RADAR_DECISION.value

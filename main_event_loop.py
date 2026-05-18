@@ -224,82 +224,99 @@ class MainEventLoop:
         )
 
     def pack_radar2clientmsg(self) -> Radar2ClientMessage:
-
+        opponent_hero_x = (
+            int(self.divisions_pos[0].x) if self.divisions_pos[0].is_valid else 0
+        )
+        opponent_hero_y = (
+            int(self.divisions_pos[0].y) if self.divisions_pos[0].is_valid else 0
+        )
+        opponent_engineer_x = (
+            int(self.divisions_pos[1].x) if self.divisions_pos[1].is_valid else 0
+        )
+        opponent_engineer_y = (
+            int(self.divisions_pos[1].y) if self.divisions_pos[1].is_valid else 0
+        )
+        opponent_infantry_3_x = (
+            int(self.divisions_pos[2].x) if self.divisions_pos[2].is_valid else 0
+        )
+        opponent_infantry_3_y = (
+            int(self.divisions_pos[2].y) if self.divisions_pos[2].is_valid else 0
+        )
+        opponent_infantry_4_x = (
+            int(self.divisions_pos[3].x) if self.divisions_pos[3].is_valid else 0
+        )
+        opponent_infantry_4_y = (
+            int(self.divisions_pos[3].y) if self.divisions_pos[3].is_valid else 0
+        )
+        opponent_sentry_x = (
+            int(self.divisions_pos[4].x) if self.divisions_pos[4].is_valid else 0
+        )
+        opponent_sentry_y = (
+            int(self.divisions_pos[4].y) if self.divisions_pos[4].is_valid else 0
+        )
+        ally_hero_x = (
+            int(self.divisions_pos[5].x) if self.divisions_pos[5].is_valid else 0
+        )
+        ally_hero_y = (
+            int(self.divisions_pos[5].y) if self.divisions_pos[5].is_valid else 0
+        )
+        ally_engineer_x = (
+            int(self.divisions_pos[6].x) if self.divisions_pos[6].is_valid else 0
+        )
+        ally_engineer_y = (
+            int(self.divisions_pos[6].y) if self.divisions_pos[6].is_valid else 0
+        )
+        ally_infantry_3_x = (
+            int(self.divisions_pos[7].x) if self.divisions_pos[7].is_valid else 0
+        )
+        ally_infantry_3_y = (
+            int(self.divisions_pos[7].y) if self.divisions_pos[7].is_valid else 0
+        )
+        ally_infantry_4_x = (
+            int(self.divisions_pos[8].x) if self.divisions_pos[8].is_valid else 0
+        )
+        ally_infantry_4_y = (
+            int(self.divisions_pos[8].y) if self.divisions_pos[8].is_valid else 0
+        )
+        ally_sentry_x = (
+            int(self.divisions_pos[9].x) if self.divisions_pos[9].is_valid else 0
+        )
+        ally_sentry_y = (
+            int(self.divisions_pos[9].y) if self.divisions_pos[9].is_valid else 0
+        )
         if self.faction == FACTION.RED or self.faction == FACTION.UNKONWN:
-            hero_x = (
-                int(self.divisions_pos[0].x) if self.divisions_pos[0].is_valid else 0
-            )
-            hero_y = (
-                int(self.divisions_pos[0].y) if self.divisions_pos[0].is_valid else 0
-            )
-            engineer_x = (
-                int(self.divisions_pos[1].x) if self.divisions_pos[1].is_valid else 0
-            )
-            engineer_y = (
-                int(self.divisions_pos[1].y) if self.divisions_pos[1].is_valid else 0
-            )
-            standard_3_x = (
-                int(self.divisions_pos[2].x) if self.divisions_pos[2].is_valid else 0
-            )
-            standard_3_y = (
-                int(self.divisions_pos[2].y) if self.divisions_pos[2].is_valid else 0
-            )
-            standard_4_x = (
-                int(self.divisions_pos[3].x) if self.divisions_pos[3].is_valid else 0
-            )
-            standard_4_y = (
-                int(self.divisions_pos[3].y) if self.divisions_pos[3].is_valid else 0
-            )
-            sentry_x = (
-                int(self.divisions_pos[4].x) if self.divisions_pos[4].is_valid else 0
-            )
-            sentry_y = (
-                int(self.divisions_pos[4].y) if self.divisions_pos[4].is_valid else 0
-            )
+            pass
         else:
-            hero_x = (
-                int(self.divisions_pos[5].x) if self.divisions_pos[5].is_valid else 0
-            )
-            hero_y = (
-                int(self.divisions_pos[5].y) if self.divisions_pos[5].is_valid else 0
-            )
-            engineer_x = (
-                int(self.divisions_pos[6].x) if self.divisions_pos[6].is_valid else 0
-            )
-            engineer_y = (
-                int(self.divisions_pos[6].y) if self.divisions_pos[6].is_valid else 0
-            )
-            standard_3_x = (
-                int(self.divisions_pos[7].x) if self.divisions_pos[7].is_valid else 0
-            )
-            standard_3_y = (
-                int(self.divisions_pos[7].y) if self.divisions_pos[7].is_valid else 0
-            )
-            standard_4_x = (
-                int(self.divisions_pos[8].x) if self.divisions_pos[8].is_valid else 0
-            )
-            standard_4_y = (
-                int(self.divisions_pos[8].y) if self.divisions_pos[8].is_valid else 0
-            )
-            sentry_x = (
-                int(self.divisions_pos[9].x) if self.divisions_pos[9].is_valid else 0
-            )
-            sentry_y = (
-                int(self.divisions_pos[9].y) if self.divisions_pos[9].is_valid else 0
-            )
+            opponent_engineer_x, ally_engineer_x = ally_engineer_x, opponent_engineer_x
+            opponent_engineer_y, ally_engineer_y = ally_engineer_y, opponent_engineer_y
+            opponent_infantry_3_x, ally_infantry_3_x = ally_infantry_3_x, opponent_infantry_3_x
+            opponent_infantry_3_y, ally_infantry_3_y = ally_infantry_3_y, opponent_infantry_3_y
+            opponent_infantry_4_x, ally_infantry_4_x = ally_infantry_4_x, opponent_infantry_4_x
+            opponent_infantry_4_y, ally_infantry_4_y = ally_infantry_4_y, opponent_infantry_4_y 
+            opponent_sentry_x, ally_sentry_x = ally_sentry_x, opponent_sentry_x
+            opponent_sentry_y, ally_sentry_y = ally_sentry_y, opponent_sentry_y
+
         return Radar2ClientMessage(
-            hero_x=hero_x,
-            hero_y=hero_y,
-            engineer_x=engineer_x,
-            engineer_y=engineer_y,
-            standard_3_x=standard_3_x,
-            standard_3_y=standard_3_y,
-            standard_4_x=standard_4_x,
-            standard_4_y=standard_4_y,
-            standard_5_x=0,  # No standard 5 position
-            standard_5_y=0,  # No standard 5 position
-            sentry_x=sentry_x,
-            sentry_y=sentry_y,  # 40
+            opponent_hero_x=opponent_hero_x,
+            opponent_hero_y=opponent_hero_y,
+            opponent_engineer_x=opponent_engineer_x,
+            opponent_engineer_y=opponent_engineer_y,
+            opponent_infantry_3_x=opponent_infantry_3_x,
+            opponent_infantry_3_y=opponent_infantry_3_y,
+            opponent_infantry_4_x=opponent_infantry_4_x,
+            opponent_infantry_4_y=opponent_infantry_4_y,
+            opponent_sentry_x=opponent_sentry_x,
+            opponent_sentry_y=opponent_sentry_y,
+            ally_hero_x=ally_hero_x,
+            ally_hero_y=ally_hero_y,
+            ally_engineer_x=ally_engineer_x,
+            ally_engineer_y=ally_engineer_y,
+            ally_infantry_3_x=ally_infantry_3_x,
+            ally_infantry_3_y=ally_infantry_3_y,
+            ally_infantry_4_x=ally_infantry_4_x,
+            ally_infantry_4_y=ally_infantry_4_y,
+            ally_sentry_x=ally_sentry_x,
+            ally_sentry_y=ally_sentry_y
         )
 
     def main_loop_thread(self):

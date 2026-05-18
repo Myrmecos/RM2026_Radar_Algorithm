@@ -45,7 +45,7 @@ class RefereeCommManager(RefereeSerialManager):
 
         # TX
         # 1. radar2sentrymsg
-        self.radar2sentry_msg = Radar2SentryMessage(
+        self.radar2sentry_msg = Radar2SentryMessage( # DO NOT KNONW WHAT TO SEND
             is_blue=False,
             hero_x=-8888,
             hero_y=-8888,
@@ -62,19 +62,31 @@ class RefereeCommManager(RefereeSerialManager):
         )
 
         # 2. radar2client_msg
-        self.radar2client_msg = Radar2ClientMessage(
-            hero_x=0,
-            hero_y=0,
-            engineer_x=0,
-            engineer_y=0,
-            standard_3_x=0,
-            standard_3_y=0,
-            standard_4_x=0,
-            standard_4_y=0,
-            standard_5_x=0,
-            standard_5_y=0,
-            sentry_x=0,
-            sentry_y=0,  # 40
+        self.radar2client_msg = Radar2ClientMessage( # UPDATED
+            opponent_hero_x=0,
+            opponent_hero_y=0,
+            opponent_engineer_x=0,
+            opponent_engineer_y=0,
+            opponent_infantry_3_x=0,
+            opponent_infantry_3_y=0,
+            opponent_infantry_4_x=0,
+            opponent_infantry_4_y=0,
+            opponent_aerial_x=0,
+            opponent_aerial_y=0,
+            opponent_sentry_x=0,
+            opponent_sentry_y=0,  # 40
+            ally_hero_x=0,
+            ally_hero_y=0,
+            ally_engineer_x=0,
+            ally_engineer_y=0,
+            ally_infantry_3_x=0,
+            ally_infantry_3_y=0,
+            ally_infantry_4_x=0,
+            ally_infantry_4_y=0,
+            ally_aerial_x=0,
+            ally_aerial_y=0,
+            ally_sentry_x=0,
+            ally_sentry_y=0,  # 40
         )
 
         # 3. 哨兵坐标反馈
@@ -124,39 +136,7 @@ class RefereeCommManager(RefereeSerialManager):
     def get_faction(self):
         return self.faction
 
-    def status_message_decode_func(self, cmd_id, data):
-        if cmd_id == MsgID.ROBOT_DATA.value:
-            message = RobotStatusMessage.from_bytes(data)
-            self_id = message.robot_id
-            if self_id < 100:
-                self.faction = FACTION.RED
-            else:
-                self.faction = FACTION.BLUE
-            # print(f"[STATUS] Robot Status: {message}")
-
-    def dart_status_message_decode_func(self, cmd_id, data):
-        if cmd_id == MsgID.LAUNCHER_DATA.value:
-            self.dart_info = DartStatusMessage.from_bytes(data)
-            self.target = self.dart_info.selected_target
-
-            # print(f"[DART] Dart Status: {self.dart_info}")
-
-    def radar_mark_progress_message_decode_func(self, cmd_id, data):
-        if cmd_id == MsgID.RADAR_MARK_PROGRESS.value:
-            self.radar_mark_progress_msg = RadarMarkMessage.from_bytes(data)
-            # print(
-            #     f"[RADAR MARK PROGRESS] Radar Mark Progress: {self.radar_mark_progress_msg}"
-            # )
-
-    def radar_info_message_decode_func(self, cmd_id, data):
-        if cmd_id == MsgID.RADAR_DECISION_SYNC.value:
-            self.radar_info_msg = RadarInfoMessage.from_bytes(data)
-            self.is_double_vulnerability = self.radar_info_msg.is_double_vulnerability
-            self.double_vulnerability_count = (
-                self.radar_info_msg.double_vulnerability_count
-            )
-            # print(f"[RADAR INFO] Radar Info: {self.radar_info_msg}")
-
+    # ==================== Decoding Received Messages ====================
     def interactive_message_decode_func(self, cmd_id, data):
         if cmd_id == MsgID.INTERACTIVE_DATA.value:
             import struct
@@ -170,6 +150,39 @@ class RefereeCommManager(RefereeSerialManager):
                     self.sentry2radar_msg = Sentry2RadarMessage.from_bytes(data)
                     self.sentry_received_flag = bool(self.sentry2radar_msg.flag)
                     # print(f"[SENTRY2RADAR] Sentry to Radar Message: {message}")
+
+    def status_message_decode_func(self, cmd_id, data): #CHECKED. obtain from server broadcast the faction info
+        if cmd_id == MsgID.ROBOT_DATA.value:
+            message = RobotStatusMessage.from_bytes(data)
+            self_id = message.robot_id
+            if self_id < 100:
+                self.faction = FACTION.RED
+            else:
+                self.faction = FACTION.BLUE
+            # print(f"[STATUS] Robot Status: {message}")
+
+    def dart_status_message_decode_func(self, cmd_id, data): #CHECKED. obtain from server broadcast the dart selected target info
+        if cmd_id == MsgID.LAUNCHER_DATA.value:
+            self.dart_info = DartStatusMessage.from_bytes(data)
+            self.target = self.dart_info.selected_target
+
+            # print(f"[DART] Dart Status: {self.dart_info}")
+
+    def radar_mark_progress_message_decode_func(self, cmd_id, data): #CHECKED
+        if cmd_id == MsgID.RADAR_MARK_PROGRESS.value:
+            self.radar_mark_progress_msg = RadarMarkMessage.from_bytes(data)
+            # print(
+            #     f"[RADAR MARK PROGRESS] Radar Mark Progress: {self.radar_mark_progress_msg}"
+            # )
+
+    def radar_info_message_decode_func(self, cmd_id, data): #CHECKED. obtain from server the radar double vulnerability status and count
+        if cmd_id == MsgID.RADAR_DECISION_SYNC.value:
+            self.radar_info_msg = RadarInfoMessage.from_bytes(data)
+            self.is_double_vulnerability = self.radar_info_msg.is_double_vulnerability
+            self.double_vulnerability_count = (
+                self.radar_info_msg.double_vulnerability_count
+            )
+            # print(f"[RADAR INFO] Radar Info: {self.radar_info_msg}")
 
     def start(self):
         """启动裁判系统通信管理器"""
@@ -212,10 +225,13 @@ class RefereeCommManager(RefereeSerialManager):
             # 8 HZ -> Referee
             # if tick % 10 == 0:
             radar2xx_counter += 1
-            if radar2xx_counter % 10 == 0:
+
+            # ============1. TO SENTRY (1Hz)
+            if radar2xx_counter % 7 == 0:
                 self.tx(self.radar2sentry_msg.pack())
 
-            elif radar2xx_counter % 10 == 5:
+            # ============2. TO REFEREE (1Hz): Double vulnerability
+            elif radar2xx_counter % 7 == 5:
                  # 状态机逻辑：只有从0/1/2到3才能触发一次
                 if self.trigger_state == RadarTriggerState.IDLE:
                     # 检测是否由0/1/2变为0
@@ -247,10 +263,12 @@ class RefereeCommManager(RefereeSerialManager):
 
                 # 每次循环都更新 last_target
                 self.last_target = self.target
+                
+            # ==========3. TO REFEREE (8Hz): radar to client message
             else:
                 self.tx(self.radar2client_msg.pack())
 
-            time.sleep(0.08)
+            time.sleep(0.13) # used to be 0.08
 
 
 if __name__ == "__main__":
