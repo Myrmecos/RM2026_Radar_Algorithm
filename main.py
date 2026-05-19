@@ -44,7 +44,8 @@ def get_parser():
     cfg = load_cfg_from_cfg_file(args.device_config)
     if args.opts is not None:
         cfg = merge_cfg_from_list(cfg, args.opts)
-    # cfg['config'] = args.config
+
+    cfg['config_filename'] = args.config
     return cfg
 
 def load_yaml_config(path: str):
@@ -58,7 +59,9 @@ if __name__ == "__main__":
 
     # 1. get arguments, initialize rospy
     args = get_parser()
-    yaml_config = load_yaml_config('config/params.yaml')
+    print("Loaded config:", args)
+    # yaml_config = load_yaml_config('config/params.yaml')
+    yaml_config = load_yaml_config(args.config_filename)
     rclpy.init()
 
     # 2. create camera
