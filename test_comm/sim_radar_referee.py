@@ -10,8 +10,8 @@ Run both ends in one terminal:
   python test_comm/sim_radar_referee.py
 
 Or split across two terminals:
-  python test_comm/sim_radar_referee.py --mode radar   --port /dev/ttyV0
-  python test_comm/sim_radar_referee.py --mode referee --port /dev/ttyV1
+  python test_comm/sim_radar_referee.py --mode radar   --radar-port /dev/ttyV0
+  python test_comm/sim_radar_referee.py --mode referee --referee-port /dev/ttyV1
 
 Requires: rclpy, pyserial, numpy (same as main.py).
 """
@@ -57,8 +57,18 @@ def _cmd_name(cmd_id: int) -> str:
     except ValueError:
         return f"UNKNOWN_0x{cmd_id:04x}"
 
+'''
+Radar will receive:
+1. RobotStatusMessage (with faction info) 0x0105 LAUNCHER_DATA
+2. DartStatusMessage 0x0201 ROBOT_DATA
+3. RadarMarkMessage (mark progress) 0x020C RADAR_MARK_PROGRESS
+4. RadarInfoMessage (double vulnerablility cnt, is double or not) 0x020E RADAR_DECISION_SYNC
 
-def _describe_radar_tx(cmd_id: int, payload: bytes) -> str:
+Radar will send:
+1. Radar2ClientMessage (positions) 0x0305 CLIEN_RADAR_DATA
+2. RadarDecisionMessage (double vuln or not) 0x0121 RADAR_DECISION
+'''
+def _describe_radar_tx(cmd_id: int, payload: bytes, simulator: MockRefereeSimulator) -> str:
     if cmd_id == MsgID.CLIENT_RADAR_DATA.value and len(payload) >= 4:
         ox, oy = struct.unpack("<HH", payload[0:4])
         return f"opponent_hero=({ox}, {oy}) cm"
@@ -75,6 +85,10 @@ def _describe_radar_tx(cmd_id: int, payload: bytes) -> str:
             extra = f"enemy_hero=({hx:.2f}, {hy:.2f}) m"
         elif sub_cmd == SubCmdID.RADAR_DECISION.value and len(payload) >= 7:
             extra = f"radar_cmd={payload[6]}"
+            if payload[6] == 1:
+                simulator.double_vul = True
+            # print "RADAR DOUBLE VULNERABILITY" if payload[6] == 1 else "RADAR NOT DOUBLE VULNERABILITY"
+            print("========================= RADAR DOUBLE VULNERABILITY" if payload[6] == 1 else ".................RADAR NOT DOUBLE VULNERABILITY")
         return f"sub={sub_name} sender=0x{sender:04x} receiver=0x{receiver:04x} {extra}"
     return f"len={len(payload)} hex={payload[:24].hex()}"
 
@@ -92,12 +106,13 @@ class MockRefereeSimulator:
         self._mgr.bind(MsgID.CLIENT_RADAR_DATA.value, self._on_radar_frame)
         self._mgr.bind(MsgID.INTERACTIVE_DATA.value, self._on_radar_frame)
         self._tick = 0
+        self.double_vul = False
 
     def _on_radar_frame(self, cmd_id: int, data: bytes) -> None:
         # Reconstruct full frame hex from logged path is not available; print parsed summary
         print(
             f"[MockReferee RX] cmd={_cmd_name(cmd_id)} (0x{cmd_id:04x}) "
-            f"{_describe_radar_tx(cmd_id, data)}"
+            f"{_describe_radar_tx(cmd_id, data, self)}"
         )
 
     def start(self) -> bool:
@@ -121,7 +136,7 @@ class MockRefereeSimulator:
             if t % 10 == 3:
                 self._send("RADAR_MARK_PROGRESS", pack_radar_mark_progress())
             if t % 10 == 5:
-                self._send("RADAR_DECISION_SYNC", pack_radar_info())
+                self._send("RADAR_DECISION_SYNC", pack_radar_info(is_double_vulnerability=self.double_vul))
 
             # ~1 Hz: dart status; cycle selected_target for double-vuln logic
             if t % 10 == 7:
@@ -202,6 +217,16 @@ class RadarStationSimulator:
                 opponent_sentry_y=0,
                 ally_hero_x=2000,
                 ally_hero_y=1500,
+                ally_engineer_x=2000,
+                ally_engineer_y=1500,
+                ally_infantry_3_x=2000,
+                ally_infantry_3_y=1500,
+                ally_infantry_4_x=2000,
+                ally_infantry_4_y=1500,
+                ally_aerial_x=2000,
+                ally_aerial_y=1500,
+                ally_sentry_x=2000,
+                ally_sentry_y=1500
             )
 
             self._referee.radar2sentry_msg = Radar2SentryMessage(
@@ -219,6 +244,8 @@ class RadarStationSimulator:
                 suggested_target=0,
                 flags=0,
             )
+
+            # radar decision message
 
             time.sleep(0.05)
 

@@ -57,7 +57,8 @@ field:
   keypoints: "transform/keypoint_6.txt" ## 区域赛场地关键点文件
   
 referee:
-  port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
+  # port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
+  port: "/dev/ttyUSB0"
   # port: "/dev/pts/9"
   baudrate: 115200            ## 串口波特率
 
