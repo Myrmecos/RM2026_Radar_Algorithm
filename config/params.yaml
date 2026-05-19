@@ -44,16 +44,16 @@ transform:
       [-0.01339114, -0.98354371, 0.18017339],
       [-0.09589397, -0.17809578, -0.97932948],]
   t: [[-0.68605672], [1.13893625], [15.32698638]]
-  demo_img_path: "field/RMUC2026_downsampled.jpg"
-  # demo_img_path: ""
+  demo_img_path: "field/RMUC2026_downsampled.jpg" 
+  # field background image is hardcoded in core.py FieldProjectionWidget's init().
 
 field:
   # mesh_path: "field/RMUC2025_National.PLY"       ## 全国赛场地文件
   # keypoints: "transform/keypoint_6.txt"          ## 全国赛场地关键点文件
   # 如果你要跑射线投影的demo,请务必把场地文件和关键点文件改成区域赛版本的
   # mesh_path: "field/RMUC2025_Regional.PLY"     ## 区域赛场地文件
-  mesh_path: "field/RMUC2026.ply"
   # mesh_path: "field/RMUC2025_National.PLY"
+  mesh_path: "field/RMUC2026.ply"
   keypoints: "transform/keypoint_6.txt" ## 区域赛场地关键点文件
   
 referee:

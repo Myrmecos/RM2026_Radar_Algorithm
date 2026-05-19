@@ -19,8 +19,9 @@ logging.basicConfig(
 class RadarStationMainWindow(QMainWindow):
     """雷达站主界面"""
 
-    def __init__(self):
+    def __init__(self, yaml_config):
         super().__init__()
+        self.yaml_config = yaml_config
         self.setWindowTitle("RoboMaster 2026 雷达站控制界面")
         self.setGeometry(100, 100, 2048, 1534)
 
@@ -721,7 +722,7 @@ class RadarStationMainWindow(QMainWindow):
                 background_image = current_image
 
             # 创建并显示标定对话框
-            calibration_dialog = KeypointCalibrationDialog(self, background_image)
+            calibration_dialog = KeypointCalibrationDialog(self, background_image, self.yaml_config)
 
             # if calibration_dialog.exec_() == QDialog.Accepted:
             # 获取标定结果
@@ -1877,8 +1878,9 @@ class ZoomableDraggableImageLabel(ZoomableDraggableLabel):
 class KeypointCalibrationDialog(QDialog):
     """关键点标定对话框 - 支持缩放和拖拽"""
 
-    def __init__(self, parent=None, background_image=None):
+    def __init__(self, parent=None, background_image=None, yaml_config=None):
         super().__init__(parent)
+        self.yaml_config = yaml_config
         self.setWindowTitle("关键点标定")
         self.setModal(True)
         self.resize(1800, 1200)
@@ -2151,7 +2153,8 @@ class KeypointCalibrationDialog(QDialog):
 
             # 加载3D物体点
             try:
-                path = "transform/keypoint_6.txt"
+                # path = "transform/keypoint_6.txt"
+                path = self.yaml_config['field']['keypoints']
                 object_points = np.loadtxt(path, dtype=np.float32)
             except:
                 QMessageBox.warning(
@@ -2252,7 +2255,7 @@ class KeypointCalibrationDialog(QDialog):
         else:
             super().keyPressEvent(event)
 
-def launch():
+def launch(yaml_config):
     """启动雷达站主界面"""
     import os
     
@@ -2267,11 +2270,13 @@ def launch():
     os.environ["QT_QPA_PLATFORM"] = "xcb"
     app = QApplication(sys.argv)
     app.setStyle("Fusion")  # 设置应用样式
-    window = RadarStationMainWindow()
+    window = RadarStationMainWindow(yaml_config)
     window.show()
     app.exec_()
 
 
 
 if __name__ == "__main__":
-    launch()
+    from main import load_yaml_config
+    yaml_config = load_yaml_config('config/params.yaml')
+    launch(yaml_config)

@@ -87,7 +87,7 @@ if __name__ == "__main__":
         camera.start_saving_threads()
 
     # 5. launch the GUI
-    launch()
+    launch(yaml_config)
     import time
 
     ## do not terminate the main eventloop
