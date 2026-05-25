@@ -287,6 +287,8 @@ class MainEventLoop:
         if self.faction == FACTION.RED or self.faction == FACTION.UNKONWN:
             pass
         else:
+            opponent_hero_x, ally_hero_x = ally_hero_x, opponent_hero_x
+            opponent_hero_y, ally_hero_y = ally_hero_y, opponent_hero_y
             opponent_engineer_x, ally_engineer_x = ally_engineer_x, opponent_engineer_x
             opponent_engineer_y, ally_engineer_y = ally_engineer_y, opponent_engineer_y
             opponent_infantry_3_x, ally_infantry_3_x = ally_infantry_3_x, opponent_infantry_3_x
