@@ -229,6 +229,7 @@ class RefereeCommManager(RefereeSerialManager):
             # ============1. TO SENTRY (1Hz)
             if radar2xx_counter % 7 == 0:
                 self.tx(self.radar2sentry_msg.pack())
+                # pass
 
             # ============2. TO REFEREE (1Hz): Double vulnerability
             elif radar2xx_counter % 7 == 5:

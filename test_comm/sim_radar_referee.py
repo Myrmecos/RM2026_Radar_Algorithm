@@ -5,6 +5,7 @@ End-to-end serial simulation: radar station (RefereeCommManager) <-> mock refere
 
 Virtual ports (from repo ReadMe):
   sudo socat -d -d PTY,link=/dev/ttyV0,raw,echo=0 PTY,link=/dev/ttyV1,raw,echo=0
+  sudo chmod 666 /dev/ttyV0 /dev/ttyV1
 
 Run both ends in one terminal:
   python test_comm/sim_radar_referee.py

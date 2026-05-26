@@ -48,24 +48,18 @@ transform:
   # field background image is hardcoded in core.py FieldProjectionWidget's init().
 
 field:
-  # mesh_path: "field/RMUC2025_National.PLY"       ## 全国赛场地文件
-  # keypoints: "transform/keypoint_6.txt"          ## 全国赛场地关键点文件
-  # 如果你要跑射线投影的demo,请务必把场地文件和关键点文件改成区域赛版本的
-  # mesh_path: "field/RMUC2025_Regional.PLY"     ## 区域赛场地文件
-  # mesh_path: "field/RMUC2025_National.PLY"
   mesh_path: "field/RMUC2026.ply"
   keypoints: "transform/keypoint_6.txt" ## 区域赛场地关键点文件
   
 referee:
   # port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
-  port: "/dev/ttyUSB0"
-  # port: "/dev/pts/9"
+  port: "/dev/ttyACM0"
   baudrate: 115200            ## 串口波特率
 
 debug:
   inference_video: false #true                   # 是否启用视频推理
   video_source: "/home/etmphile/Desktop/img_to_vid/mock_highres.mp4"  # 视频源路径
-  streaming_video: true                  # 是否录制视频
+  streaming_video: false                  # 是否录制视频
 
 
   
