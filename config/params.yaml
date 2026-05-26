@@ -65,7 +65,7 @@ referee:
 debug:
   inference_video: false #true                   # 是否启用视频推理
   video_source: "/home/etmphile/Desktop/img_to_vid/mock_highres.mp4"  # 视频源路径
-  streaming_video: false                  # 是否录制视频
+  streaming_video: true                  # 是否录制视频
 
 
   

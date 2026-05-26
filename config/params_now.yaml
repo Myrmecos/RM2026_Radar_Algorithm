@@ -35,8 +35,8 @@ tracker:
 
 device: "cuda"
 transform:
-  K: [[2500.0, 0.0, 1536.0], [0.0, 2500.0, 1024.0], [0.0, 0.0, 1.0]]
-  dist_coeffs: [0.0, 0.0, 0.0, 0.0, 0.0]
+  K: [[5267.067496, 0.0, 2595.34351], [0.0, 5289.319877, 1835.457692], [0.0, 0.0, 1.0]]
+  dist_coeffs: [-0.042089, 0.163844, 0.001424, 0.000762, 0.0]
   verbose: true
 
   ## The below parameters are only used for mimic or demostration purposes
@@ -62,7 +62,7 @@ referee:
   baudrate: 115200            ## 串口波特率
 
 debug:
-  inference_video: true #true                   # 是否启用视频推理
+  inference_video: false #true                   # 是否启用视频推理
   video_source: "/home/etmphile/Desktop/img_to_vid/mock.mp4"  # 视频源路径
   # video_source: "/home/etmphile/桌面/RM2025-Radar-Algorithm/videos/HarbinU.mp4"
   streaming_video: false                  # 是否录制视频
