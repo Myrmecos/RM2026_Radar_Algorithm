@@ -1,0 +1,11 @@
+from ultralytics import YOLO
+m = YOLO("weights/horizon_armor.pt")
+print(m.names)
+m = YOLO("weights/armor.pt")
+print(m.names)
+m = YOLO("weights/horizon_car.pt")
+print(m.names)
+m = YOLO("weights/car.pt")
+print(m.names)
+m = YOLO("weights/armor_pattern.pth")
+print(m.names)

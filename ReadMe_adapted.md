@@ -1,3 +1,8 @@
+# 太长不看版
+source ros_setup.bash
+sudo chmod 766 /dev/ttyACM0
+python main.py --config config/params.yaml --device_config config/device.yaml
+
 # Training
 1. train car detector: python train/car_train.py
 2. train armor detector: python train/armor_train.py
@@ -53,3 +58,13 @@ sudo dkms install -m nvidia -v 580.119.02
 
 # testing communication
 1. sudo socat -d -d PTY,link=/dev/ttyV0,raw,echo=0 PTY,link=/dev/ttyV1,raw,echo=0
+
+# Remove the need for chmod every time
+1. sudo visudo -f /etc/sudoers.d/astar-nopasswd
+2. astar ALL=(ALL) NOPASSWD: ALL
+3. save
+4. how to remove: delete file in step 1.
+
+
+#
+1. model/armor_detector.pt: determine if we are using horizon's or hkust's model
