@@ -228,7 +228,7 @@ class RefereeCommManager(RefereeSerialManager):
 
             # ============1. TO SENTRY (1Hz)
             if radar2xx_counter % 7 == 0:
-                self.tx(self.radar2sentry_msg.pack())
+                self.tx(self.radar2sentry_msg.pack()) #0x0233
                 # pass
 
             # ============2. TO REFEREE (1Hz): Double vulnerability
@@ -255,7 +255,7 @@ class RefereeCommManager(RefereeSerialManager):
                             self.trigger_state = RadarTriggerState.TRIGGERING
                 
                 else:  # TRIGGERING 状态
-                    self.tx(self.pack_radar_decision_message().pack())
+                    self.tx(self.pack_radar_decision_message().pack()) # subid: 0x0121
                     if self.is_double_vulnerability == 1 or self.double_vulnerability_count == 0:
                         self.trigger_state = RadarTriggerState.IDLE
                         self.get_logger().warning("[RefereeCommLogic] Double vulnerability triggered, resetting trigger state.")
@@ -267,7 +267,7 @@ class RefereeCommManager(RefereeSerialManager):
                 
             # ==========3. TO REFEREE (8Hz): radar to client message
             else:
-                self.tx(self.radar2client_msg.pack())
+                self.tx(self.radar2client_msg.pack()) # 0x0305
 
             time.sleep(0.13) # used to be 0.08
 

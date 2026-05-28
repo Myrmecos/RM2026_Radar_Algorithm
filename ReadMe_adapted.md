@@ -1,6 +1,6 @@
 # 太长不看版
 source ros_setup.bash
-sudo chmod 766 /dev/ttyACM0
+sudo chmod 766 /dev/ttyACM0 /dev/ttyACM1
 python main.py --config config/params.yaml --device_config config/device.yaml
 
 # Training
@@ -68,3 +68,11 @@ sudo dkms install -m nvidia -v 580.119.02
 
 #
 1. model/armor_detector.pt: determine if we are using horizon's or hkust's model
+
+# testing communication
+sudo socat -d -d PTY,link=/dev/ttyV0,raw,echo=0 PTY,link=/dev/ttyV1,raw,echo=0
+sudo chmod 666 /dev/ttyV0 /dev/ttyV1
+python test_comm/sim_radar_referee.py --mode referee --referee-port /dev/ttyV1
+
+change the reference: port in params.yaml to '/dev/ttyV0'
+

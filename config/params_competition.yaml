@@ -55,7 +55,6 @@ field:
 referee:
   # port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
   port: "/dev/ttyACM0"
-  # port: "/dev/ttyV0"          ## 串口第二默认写入文件
   baudrate: 115200            ## 串口波特率
 
 debug:
@@ -71,7 +70,7 @@ debug:
 
 
 
- 
+
 
 
 

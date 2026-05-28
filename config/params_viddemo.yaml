@@ -55,12 +55,11 @@ field:
 referee:
   # port: "/dev/ttyCH341USB0"   ## 串口第一默认写入文件
   port: "/dev/ttyACM0"
-  # port: "/dev/ttyV0"          ## 串口第二默认写入文件
   baudrate: 115200            ## 串口波特率
 
 debug:
-  inference_video: false #true                   # 是否启用视频推理
-  video_source: "/home/etmphile/Desktop/img_to_vid/mock_highres.mp4"  # 视频源路径
+  inference_video: true #true                   # 是否启用视频推理
+  video_source: "/home/etmphile/桌面/RM2025-Radar-Algorithm/videos/WuhanU.avi"  # 视频源路径
   streaming_video: true                 # 是否录制视频
 
 
@@ -71,7 +70,7 @@ debug:
 
 
 
- 
+
 
 
 
