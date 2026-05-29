@@ -6,20 +6,28 @@ import time
 class SimpleHikCamera:
     _instance = None
 
-    def __init__(self, video_source: str):
+    def __init__(self, video_source: str, width: int = 0, height: int = 0):
         """
         Initialize the camera with the given video source.
 
         Args:
             video_source (int or str): The video source, can be an integer for webcam or a string for video file.
+            width (int): Desired capture width for mock camera. Use 0 to keep default.
+            height (int): Desired capture height for mock camera. Use 0 to keep default.
         """
         self.video_source = video_source
         self.capture = cv2.VideoCapture(video_source)
+
+        if width > 0:
+            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        if height > 0:
+            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
         self.__class__._instance = self
 
         self.cur_image = None
         self.lock = Lock()
-        print(f"Initialized camera with source: {video_source}")
+        print(f"Initialized camera with source: {video_source}, width={width}, height={height}")
         self.fetch_loop = Thread(target=self.fetch_image_loop, daemon=True)
         self.fetch_loop.start()
 

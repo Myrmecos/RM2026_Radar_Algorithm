@@ -7,7 +7,7 @@ import cv2
 import open3d as o3d
 
 # load the settings
-with open("config/params_project_test_lab.yaml", "r") as f:
+with open("config/previous/params_project_test_lab.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 camera_matrix=np.array(config["transform"]["K"])

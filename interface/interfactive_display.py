@@ -36,7 +36,7 @@ class ZoomableDraggableLabel(QLabel):
     def setPixmap(self, pixmap):
         """设置图像并重置缩放"""
         self.original_pixmap = pixmap
-        self.scale_factor = 1.0
+        self.scale_factor = 0.8
         self.image_offset = QPoint(0, 0)
         self.update_display()
 

@@ -1,6 +1,8 @@
 # 太长不看版
 source ros_setup.bash
+
 sudo chmod 766 /dev/ttyACM0 /dev/ttyACM1
+
 python main.py --config config/params.yaml --device_config config/device.yaml
 
 # Training
@@ -32,7 +34,7 @@ params.yaml, debug, inference_video.
 # calibration
 go to ~/ros_ws/
 
-# What to chagne to adapt to new environment
+# What to chagne to adapt to new environment 
 1. image visualization
     1. in core.py, change: `self.field_image = cv2.imread("./field/RMUC2026.png")`
     2. lower-right is (0, 0); upper left is (1500, 2800)
@@ -76,3 +78,40 @@ python test_comm/sim_radar_referee.py --mode referee --referee-port /dev/ttyV1
 
 change the reference: port in params.yaml to '/dev/ttyV0'
 
+
+# 复盘
+1. ffmpeg -framerate 30 -pattern_type glob -i 'ssd/referee_logs/saved_images_2026-05-28_15:28:11.729/*.jpg' -c:v libx264 -pix_fmt yuv420p -crf 23 "ssd/referee_logs/saved_images_2026-05-28_15:28:11.729.mp4"
+
+0. 入场前保证
+    1. 线解缠绕
+    2. 光圈合理
+1. 进场快速部署：
+    1. 电脑插电源
+    2. 插裁判系统
+    3. bash start.sh
+    3. 放好相机，拉线
+    4. 标定
+
+2. 现在检查：
+    1. 使用地图文件是否正确
+        是对的，只要写入params.yaml即可。
+    2. 标定用点重设置（选择不容易遮挡的点）
+        设置了，在demo4.png
+    3. 测试标定用新点准确率 
+        模拟数据图像上是准的
+        真实图像呢：
+    4. 压力测试：相机前面提供视频
+        3小时空白场景不产生问题（似乎）
+    5. 重新标定相机
+    
+3. 留意：
+    1. 如何触发相机报错和检测缺失
+        1. 连接松弛，晃动导致部分图像不完整
+        2. 若不拔插就重新插紧，会导致该问题（报错Get frame failed! Error code: 0x80000003）持续出现。
+        3. 解决方法是确保相机线两头都插紧。若出现问题，拔插（不是仅仅插紧）
+
+4. 标定
+    1. in one terminal: python cam_publisher.py 
+    2. in another terminal, run: ros2 run camera_calibration cameracalibrator --size 10x7 --square 0.020 image:=/rgb_image
+
+    0. ros2 run camera_calibration cameracalibrator --size 10x7 --square 0.020 image:=/rgb_image
