@@ -254,6 +254,10 @@ class MainEventLoop:
         opponent_sentry_y = (
             int(self.divisions_pos[4].y) if self.divisions_pos[4].is_valid else 0
         )
+        # x = 14.0 + 12.540
+        # y = 7.5 - 5.358
+        opponent_drone_x = int(26.540*100) #5.358, 1.100, -12.174 (5.676, 1.100, -12.540) #DEBUG
+        opponent_drone_y = int(2.142*100)
         ally_hero_x = (
             int(self.divisions_pos[5].x) if self.divisions_pos[5].is_valid else 0
         )
@@ -284,6 +288,8 @@ class MainEventLoop:
         ally_sentry_y = (
             int(self.divisions_pos[9].y) if self.divisions_pos[9].is_valid else 0
         )
+        ally_drone_x = int(1.460*100)
+        ally_drone_y = int(12.858*100)
         if self.faction == FACTION.RED or self.faction == FACTION.UNKONWN:
             pass
         else:
@@ -309,6 +315,8 @@ class MainEventLoop:
             opponent_infantry_4_y=opponent_infantry_4_y,
             opponent_sentry_x=opponent_sentry_x,
             opponent_sentry_y=opponent_sentry_y,
+            opponent_aerial_x=opponent_drone_x,
+            opponent_aerial_y=opponent_drone_y,
             ally_hero_x=ally_hero_x,
             ally_hero_y=ally_hero_y,
             ally_engineer_x=ally_engineer_x,
@@ -318,7 +326,9 @@ class MainEventLoop:
             ally_infantry_4_x=ally_infantry_4_x,
             ally_infantry_4_y=ally_infantry_4_y,
             ally_sentry_x=ally_sentry_x,
-            ally_sentry_y=ally_sentry_y
+            ally_sentry_y=ally_sentry_y,
+            ally_aerial_x=ally_drone_x,
+            ally_aerial_y=ally_drone_y
         )
 
     def main_loop_thread(self):

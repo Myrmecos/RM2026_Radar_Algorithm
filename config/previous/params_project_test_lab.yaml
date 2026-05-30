@@ -52,7 +52,7 @@ field:
   # keypoints: "transform/keypoint_6.txt"          ## 全国赛场地关键点文件
   # 如果你要跑射线投影的demo,请务必把场地文件和关键点文件改成区域赛版本的
   # mesh_path: "field/RMUC2025_Regional.PLY"     ## 区域赛场地文件
-  mesh_path: "field/RMUC2026_scaled_oriented_centered.ply"
+  mesh_path: "field/RMUC2026.ply"
   # mesh_path: "field/RMUC2025_National.PLY"
   keypoints: "transform/keypoint_6_region.txt" ## 区域赛场地关键点文件
   

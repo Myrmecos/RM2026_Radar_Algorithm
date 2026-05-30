@@ -232,6 +232,8 @@ class RefereeCommManager(RefereeSerialManager):
                 # pass
 
             # ============2. TO REFEREE (1Hz): Double vulnerability
+            # if self.double_vulnerability_count > 0 and self.is_double_vulnerability == 0:
+            #     self.tx(self.pack_radar_decision_message().pack())
             elif radar2xx_counter % 7 == 5:
                  # 状态机逻辑：只有从0/1/2到3才能触发一次
                 if self.trigger_state == RadarTriggerState.IDLE:
