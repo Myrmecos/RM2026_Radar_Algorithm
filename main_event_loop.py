@@ -303,6 +303,8 @@ class MainEventLoop:
             opponent_infantry_4_y, ally_infantry_4_y = ally_infantry_4_y, opponent_infantry_4_y 
             opponent_sentry_x, ally_sentry_x = ally_sentry_x, opponent_sentry_x
             opponent_sentry_y, ally_sentry_y = ally_sentry_y, opponent_sentry_y
+            opponent_drone_x, ally_drone_x = ally_drone_x, opponent_drone_x
+            opponent_drone_y, ally_drone_y = ally_drone_y, opponent_drone_y
 
         return Radar2ClientMessage(
             opponent_hero_x=opponent_hero_x,
